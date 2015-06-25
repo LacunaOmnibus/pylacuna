@@ -119,7 +119,7 @@ class Game(object):
                 raise
 
         # Just clear it if its inactive
-        if not self.session_active(session['result']['session_id']):
+        if session is not None and not self.session_active(session['result']['session_id']):
             session = None
 
         if session is None:
