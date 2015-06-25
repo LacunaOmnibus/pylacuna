@@ -58,3 +58,4 @@ target/
 
 # User config
 .config
+.session_info

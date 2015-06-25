@@ -9,7 +9,8 @@ from ipdb import set_trace
 from IPython import embed
 
 RESOURCES_FILE = 'resources.json'
-SESSION_FILE = 'session_info'
+SESSION_FILE = '.session_info'
+USER_CONFIG = '.config'
 API_KEY = "b66b76df-eb06-4ebd-b88d-c2ccb8a3d580"
 
 
@@ -195,7 +196,7 @@ def write_user_creds():
         'name': name,
         'password': pw
     }
-    with open('.config', 'w') as f:
+    with open(USER_CONFIG, 'w') as f:
         pickle.dump(user, f)
     print "Wrote user credentials to file"
     return user
@@ -204,7 +205,7 @@ def write_user_creds():
 def get_user_creds():
     user = None
     try:
-        with open('.config', 'r') as f:
+        with open(USER_CONFIG, 'r') as f:
             user = pickle.load(f)
             print "Getting user credentials from file"
     # Catch file no found errors
