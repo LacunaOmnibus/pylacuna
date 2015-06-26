@@ -4,15 +4,17 @@ import json
 import pickle
 from datetime import datetime
 from dateutil import tz, parser
+import redis
 
 from ipdb import set_trace
 from IPython import embed
+
 
 RESOURCES_FILE = 'resources.json'
 SESSION_FILE = '.session_info'
 USER_CONFIG = '.config'
 API_KEY = "b66b76df-eb06-4ebd-b88d-c2ccb8a3d580"
-
+REDIS_HANDLE = None
 
 def get_server():
     with open("servers.json", 'r') as f:
@@ -219,13 +221,15 @@ def get_user_creds():
     return user
 
 
+def start_redis_server():
+    global REDIS_HANDLE
+    REDIS_HANDLE = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+
 def main():
+    start_redis_server()
     gameobj = Game()
     body = BodyInfo(gameobj)
 
 if __name__ == '__main__':
     main()
-
-    # curl 'https://us1.lacunaexpanse.com/empire' -H 'Origin: https://us1.lacunaexpanse.com' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8' -H 'User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36' -H 'Content-Type: application/json' -H 'Accept: */*' -H 'Referer: https://us1.lacunaexpanse.com/' -H 'X-Requested-With: XMLHttpRequest' -H 'Connection: keep-alive' --data-binary '{"id":567,"method":"login","jsonrpc":"2.0","params":["MikeTwo","4%xR&Ie7E@ii5%w%LW","53137d8f-3544-4118-9001-b0acbec70b3d"]}' --compressed
-
-# NVGf=hh3
