@@ -1,1 +1,8 @@
 redis
+requests
+python-dateutil
+
+
+# Testing
+ipdb
+ipython
