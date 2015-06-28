@@ -12,6 +12,7 @@ import globals as g
 import session
 import user
 import errors
+import body
 
 
 class Game(object):
@@ -22,13 +23,14 @@ class Game(object):
         self.user = self.create_or_load_user()
         self.session = session.Session.create_or_load(
             g.SESSION_FILE, self.server['uri'], **self.user)
+        print "Game initialized."
         print "SESSION ID: {}".format(self.session.id)
-
         # self.home_planet = self.login_info['result']['status']['empire']['home_planet_id']
 
     def run(self):
         ''' Run the AI '''
-        pass
+        home = body.Body(self.session, self.session.status['empire']['home_planet_id'])
+        from IPython import embed; embed()
 
     def get_server(self):
         print "Getting server..."
@@ -44,7 +46,7 @@ class Game(object):
         try:
             with open(g.RESOURCES_FILE, 'r') as f:
                 resources = pickle.load(f)
-                print "\t--> resources from file"
+                print "  --> resources from file"
         # Catch file no found errors
         except IOError as e:
             if not e.errno == 2:  # File not found

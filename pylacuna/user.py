@@ -16,7 +16,7 @@ class User(dict):
     def load(cls, filename):
         with open(filename, 'r') as f:
             cls = pickle.load(f)
-            print "Getting session from file"
+            print "Getting user credentials from file..."
             return cls
 
     def save(self, filename):
