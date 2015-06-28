@@ -59,15 +59,15 @@ def get_resources(server):
     return resources
 
 
-def login(server):
-    payload = {
-        "id": 1,
-        "jsonrpc": "2.0",
-        "method": "login",
-        "params": ["MikeTwo", "NVGf=hh3", "b66b76df-eb06-4ebd-b88d-c2ccb8a3d580"]
-    }
-    response = requests.post(server['uri']+'empire', json=payload)
-    return response, response.json()['result']['session_id']
+# def login(server):
+#     payload = {
+#         "id": 1,
+#         "jsonrpc": "2.0",
+#         "method": "login",
+#         "params": ["MikeTwo", "NVGf=hh3", "b66b76df-eb06-4ebd-b88d-c2ccb8a3d580"]
+#     }
+#     response = requests.post(server['uri']+'empire', json=payload)
+#     return response, response.json()['result']['session_id']
 
 
 class Game(object):
@@ -222,6 +222,7 @@ def get_user_creds():
 
 
 def start_redis_server():
+    set_trace()
     global REDIS_HANDLE
     REDIS_HANDLE = redis.StrictRedis(host='localhost', port=6379, db=0)
 
