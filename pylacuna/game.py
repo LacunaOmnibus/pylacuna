@@ -20,10 +20,11 @@ class Game(object):
         self.server = self.get_server()
         self.resources = self.get_resources()
         self.user = self.create_or_load_user()
-        self.login_info = self.create_or_load_session()
-        self.session_id = self.login_info['result']['session_id']
-        print "SESSION ID: {}".format(self.session_id)
-        self.home_planet = self.login_info['result']['status']['empire']['home_planet_id']
+        self.session = session.Session.create_or_load(
+            g.SESSION_FILE, self.server['uri'], **self.user)
+        print "SESSION ID: {}".format(self.session.id)
+
+        # self.home_planet = self.login_info['result']['status']['empire']['home_planet_id']
 
     def run(self):
         ''' Run the AI '''
@@ -69,10 +70,6 @@ class Game(object):
         print "Resources expire: {}".format(resource_expire_time)
         print "Current time:     {}".format(now)
         return resource_expire_time <= now
-
-    def create_or_load_session(self):
-        return session.Session.create_or_load(
-            g.SESSION_FILE, self.server['uri'], **self.user)
 
     def create_or_load_user(self):
         _tmp = None

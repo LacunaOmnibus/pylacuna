@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import requests
-import json
 import pickle
 
 from ipdb import set_trace
@@ -9,26 +8,31 @@ import globals as g
 
 
 class Session(object):
-    ''' Represents a logged in session to Lacuna
-        Has methods for logging in and out, and making calls to the api
+    ''' Represents a logged-in session to Lacuna
 
-        WAYS to create a session
+        Has methods for logging in and out, and making arbitrary calls to the
+        api
 
+        Several ways to create a session:
         Session.login(server_uri, username, password)
         Session.load(file_path)
 
         Convenience constructor:
         Session.create_or_load(file_path, server_uri, username, password)
+
+        Please note that the session will be pickled and saved locally unless
+        you pass save=False to the constructors
     '''
     def __init__(self, server, _session, save=True):
-        self.id = 1
+        self.request_id = 1
         self.server = server
         self._session = _session
+        self.id = _session['result']['session_id']
         if save:
             self.save(g.SESSION_FILE)
 
     @classmethod
-    def login(cls, server_uri, username, password):
+    def login(cls, server_uri, username, password, save=True):
         payload = {
             "id": 1,
             "jsonrpc": "2.0",
@@ -38,7 +42,18 @@ class Session(object):
         print "Logging in via server"
         response = requests.post(server_uri+'empire', json=payload)
         response.raise_for_status()
-        return cls(server_uri, response.json())
+        return cls(server_uri, response.json(), save)
+
+    def logout(self):
+        payload = {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "logout",
+            "params": [self.id]
+        }
+        print "Logging out"
+        response = requests.post(self.server+'empire', json=payload)
+        response.raise_for_status()
 
     @classmethod
     def load(cls, filename):
@@ -48,7 +63,7 @@ class Session(object):
             return cls
 
     @classmethod
-    def create_or_load(cls, file_path, server_uri, username, password):
+    def create_or_load(cls, file_path, server_uri, username, password, save=True):
         _tmp = None
         try:
             _tmp = cls.load(g.SESSION_FILE)
@@ -59,11 +74,11 @@ class Session(object):
                 raise
 
         # Just clear it if its inactive
-        if _tmp is not None and not _tmp.session_active():
+        if _tmp is not None and not _tmp.is_active():
             _tmp = None
 
         if _tmp is None:
-            _tmp = cls.login(server_uri, username, password)
+            _tmp = cls.login(server_uri, username, password, save)
 
         return _tmp
 
@@ -77,25 +92,26 @@ class Session(object):
         POSTs a JSON RPC 2.0 method at server/route/
         '''
         payload = {
-            "id": self.id,
+            "id": self.request_id,
             "jsonrpc": "2.0",
             "method": method,
             "params": params
         }
         response = requests.post(self.server['uri']+route, json=payload)
-        self.id += 1
+        self.request_id += 1
         return response.json()
 
     def is_active(self):
-        ''' Checks that a session is active '''
-        session_id = self._session['result']['session_id']
+        ''' Checks that a session is active by pinging the server for
+        stats
+        '''
         payload = {
             "id": 1,
             "jsonrpc": "2.0",
             "method": "empire_rank",
-            "params": [session_id]
+            "params": [self.id]
         }
-        response = requests.post(self.server['uri']+'stats', json=payload)
+        response = requests.post(self.server+'stats', json=payload)
         if response.status_code != 200:
             return False
         else:
