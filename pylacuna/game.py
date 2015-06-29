@@ -15,6 +15,8 @@ import errors
 import body
 
 
+
+
 class Game(object):
     def __init__(self):
         print "Initializing:"
@@ -30,6 +32,7 @@ class Game(object):
     def run(self):
         ''' Run the AI '''
         home = body.Body(self.session, self.session.status['empire']['home_planet_id'])
+        home.status.resource_calcs()
         from IPython import embed; embed()
 
     def get_server(self):

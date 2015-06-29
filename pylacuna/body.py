@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import status
+
 class Body(object):
     def __init__(self, session, body_id):
         '''
@@ -8,10 +10,14 @@ class Body(object):
         '''
         self.session = session
         self.id = body_id
+        self.status = status.Status({})
         self.buildings = self.get_buildings()
 
     def __str__(self):
         return str(self.buildings)
+
+    def update_status(self, aDict):
+        self.status.update(aDict)
 
     def get_status(self):
         return self.session.call_method_with_session_id(
@@ -20,10 +26,12 @@ class Body(object):
             params=[self.id])
 
     def get_buildings(self):
-        return self.session.call_method_with_session_id(
+        bldgs = self.session.call_method_with_session_id(
             route='body',
             method='get_buildings',
             params=[self.id])
+        self.update_status(bldgs['result']['status']['body'])
+        return bldgs
 
     def repair_list(self, building_ids):
         return self.session.call_method_with_session_id(

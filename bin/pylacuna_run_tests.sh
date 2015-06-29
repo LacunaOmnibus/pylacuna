@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+# ToDo: Switch to nosetests
+
 echo "Running unit tests..."
-python pylacuna/tests/test_session.py
+cd pylacuna/tests/
+python test_session.py
+python test_status.py
+python test_body.py
 

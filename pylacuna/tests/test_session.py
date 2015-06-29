@@ -53,27 +53,6 @@ SESSION_DICT = ast.literal_eval('''
     u'version': 3.0911}}}}
 ''')
 
-
-class testStatus(unittest.TestCase):
-    def setUp(self):
-        # Patch out requests
-        patcher = patch('pylacuna.session.requests')
-        self.mock_requests = patcher.start()
-        self.addCleanup(patcher.stop)
-
-        # Patch out pickle
-        patcher = patch('pylacuna.session.pickle')
-        self.mock_pickle = patcher.start()
-        self.addCleanup(patcher.stop)
-
-    def tearDown(self):
-        pass
-
-    def test_init(self):
-        self.assertEqual(1, 1)
-
-
-
 class testSession(unittest.TestCase):
     def setUp(self):
         # Patch out requests
