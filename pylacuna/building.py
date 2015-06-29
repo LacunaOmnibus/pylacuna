@@ -6,6 +6,16 @@ class Building(dict):
     def __init__(self, session, building_id, aDict):
         super(Building, self).__init__()
         self.update(aDict)
+        self.id = building_id
+
+    # Refactor calls into single method?  Maybe...
+    # def _call_with_building_id(self, method, *args):
+    #     params = [self.id]
+    #     params.extend(*args)
+    #     return self.session.call_method_with_session_id(
+    #         route='buildings',
+    #         method=method,
+    #         params=params)
 
     def build(self, x, y):
         assert 'url' in self, "Must have a url to build"
@@ -14,26 +24,44 @@ class Building(dict):
             method='build',
             params=[self.id, x, y])
 
-    def view (self, building_id ):
-        raise NotImplementedError
+    def view(self):
+        return self.session.call_method_with_session_id(
+            route='buildings',
+            method='view',
+            params=[self.id])
 
-    def upgrade (self, building_id ):
-        raise NotImplementedError
+    def upgrade(self):
+        return self.session.call_method_with_session_id(
+            route='buildings',
+            method='upgrade',
+            params=[self.id])
 
-    def demolish (self, building_id ):
-        raise NotImplementedError
+    def demolish(self):
+        return self.session.call_method_with_session_id(
+            route='buildings',
+            method='demolish',
+            params=[self.id])
 
-    def downgrade (self, building_id ):
-        raise NotImplementedError
+    def downgrade(self):
+        return self.session.call_method_with_session_id(
+            route='buildings',
+            method='downgrade',
+            params=[self.id])
 
-    def get_stats_for_level (self, building_id, level ):
-        raise NotImplementedError
+    def get_stats_for_level(self, level):
+        return self.session.call_method_with_session_id(
+            route='buildings',
+            method='get_stats_for_level',
+            params=[self.id, level])
 
-    def repair (self, building_id ):
-        raise NotImplementedError
+    def repair(self):
+        return self.session.call_method_with_session_id(
+            route='buildings',
+            method='repair',
+            params=[self.id])
 
 
-# Todo. Make all these classes into their own files:
+# Todo. Make all these classes into their own files?
 class Algae(Building):
     pass
 

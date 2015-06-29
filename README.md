@@ -82,7 +82,18 @@ Project/
 |-- README.md
 ```
 
-# Layers
+Architecture
+------------
+Most core libraries are derived from the dict object, since that is the native
+response from the JSONRPC API. I'm trying to have libraries at multiple
+abstraction levels:
+ - CORE libraries are the raw interface to the JSONRPC. I'm trying to keep them
+   dumb, simple, and stateless, though that last one might be hard because I
+   also want to be smart about caching.
+ - MIDDLEWARE libraries will have more types of calculations and mission-level logic. For example, maybe a method that ranks the nearest planets according to their resource content (or some other hueristic).
+ - HIGH-LEVEL libraries will include the AI. I'm leaning toward starting with A*, depending on how easy it is to simulate future states.  It'll depend on how the middleware layer turns out.
+
+
 
 
 

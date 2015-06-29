@@ -10,8 +10,13 @@ class Map(dict):
     def get_star_map():
         raise NotImplementedError
 
-    def get_stars(self, x1, y1, x2, y2 ):
-        raise NotImplementedError
+    def get_stars(self, x1, y1, x2, y2):
+        assert abs(x1-x2)<=30, "Requested area too big"
+        assert abs(y1-y2)<=30, "Requested area too big"
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='get_stars',
+            params=[x1, y1, x2, y2])
 
     def check_star_for_incoming_probe(self, star_id ):
         raise NotImplementedError

@@ -89,11 +89,3 @@ class Game(object):
             _tmp = user.User(username, password)
 
         return _tmp
-
-    def acquire_and_pickle(server):
-        print "STARTING NEW SESSION"
-        resources = requests.get(server['uri']+g.RESOURCES_FILE)
-        resources.raise_for_status()
-        with open(g.RESOURCES_FILE, 'w') as f:
-            pickle.dump(resources, f)
-        return resources

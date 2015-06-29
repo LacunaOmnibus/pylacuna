@@ -8,7 +8,10 @@ class Body(object):
         '''
         self.session = session
         self.id = body_id
-        self.buildings = self.get_buildings(body_id)
+        self.buildings = self.get_buildings()
+
+    def __str__(self):
+        return str(self.buildings)
 
     def get_status(self):
         return self.session.call_method_with_session_id(

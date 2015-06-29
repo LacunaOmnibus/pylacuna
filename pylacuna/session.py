@@ -109,6 +109,9 @@ class Session(object):
         # response.raise_for_status()
         # ------------------------------------------
         self.request_id += 1
+        data = response.json()
+        if 'status' in data:
+            self.status.update(data['status'])
         return response.json()
 
     def is_active(self):
