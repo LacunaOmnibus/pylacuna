@@ -104,7 +104,6 @@ class Session(object):
             "method": method,
             "params": params
         }
-        print "Posting:\n{}".format(payload)
         response = requests.post(self.server+route, json=payload)
         # Not sure if I should raise here or not....
         # response.raise_for_status()
@@ -118,7 +117,6 @@ class Session(object):
         '''
         print "Checking if session is active."
         result = self.call_method_with_session_id('stats', 'empire_rank', [])
-        print result
         if 'error' in result:
             return False
         else:
