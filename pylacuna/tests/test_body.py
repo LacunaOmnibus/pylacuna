@@ -2,8 +2,10 @@
 
 import os
 import unittest
-import pylacuna.session
 from mock import patch, MagicMock, ANY, call
+
+import pylacuna.body
+import pylacuna.bodyeval
 
 import ast
 
@@ -13,7 +15,76 @@ if version_info.major == 2:
 else:
     import builtins  # pylint:disable=import-error
 
-GET_BUILDINGS_RESPONSE = '''
+INDIVIDUAL_BUILDING_VIEW = ast.literal_eval('''
+{u'jsonrpc': u'2.0', u'id': 4, u'result': {
+    u'status': {
+        u'body': {u'waste_stored': 8716, u'energy_capacity': u'21457', u'water_capacity': u'24340', u'needs_surface_refresh': u'0', u'ore_hour': 820, u'building_count': 45, u'empire': {u'is_isolationist': u'1', u'name': u'MikeTwo', u'alignment': u'self', u'id': u'51819'},
+                u'id': u'358099',
+                u'happiness': 74408,
+                u'size': u'45',
+                u'star_name': u'Ouss Siek',
+                u'food_stored': 8354,
+                u'zone': u'1|-1', u'happiness_hour': u'300', u'waste_hour': u'380', u'plots_available': u'0', u'ore_capacity': u'28150', u'food_hour': 1115, u'num_incoming_ally': 0, u'type': u'habitable planet', u'image': u'p38-3', u'surface_version': u'279', u'food_capacity': u'20743', u'waste_capacity': u'27580', u'water_hour': u'568', u'water': 8000, u'neutral_entry': u'29 06 2015 18:18:32 +0000', u'x': u'426',
+                u'ore': {u'uraninite': 1, u'rutile': 1, u'gypsum': 1, u'gold': 1, u'trona': 1, u'bauxite': 1, u'fluorite': 3000, u'kerogen': 1, u'zircon': 1, u'goethite': 1, u'beryl': 1, u'monazite': 1, u'magnetite': 1, u'galena': 1, u'chalcopyrite': 1, u'sulfur': 7000, u'halite': 1, u'chromite': 1, u'anthracite': 1, u'methane': 1},
+                u'population': 2240000, u'num_incoming_enemy': u'0', u'energy_stored': 15230, u'name': u'Cloraphorm III', u'num_incoming_own': u'0', u'build_queue_size': 9, u'orbit': u'3', u'ore_stored': 19305, u'propaganda_boost': u'0', u'energy_hour': u'760', u'build_queue_len': 9, u'y': u'-256', u'water_stored': 9108, u'star_id': u'49729'},
+        u'empire': {u'is_isolationist': u'1', u'rpc_count': 545, u'name': u'MikeTwo', u'essentia': 1.1, u'next_station_cost': u'10000000000000000000', u'tech_level': u'7', u'stations': {}, u'has_new_messages': u'0', u'id': u'51819', u'next_colony_cost': u'100000', u'next_colony_srcs': u'100000', u'self_destruct_date': u'08 06 2015 05:49:38 +0000',
+                u'planets': {u'358099': u'Cloraphorm III'},
+                u'home_planet_id': u'358099',
+                u'self_destruct_active': u'0', u'insurrect_value': u'100000', u'primary_embassy_id': u'5048765', u'status_message': u'Just getting started', u'latest_message_id': u'0',
+                u'colonies': {u'358099': u'Cloraphorm III'}}, u'server': {u'star_map_size': {u'y': [-1500, 1500], u'x': [-1500, 1500]}, u'version': 3.0911, u'rpc_limit': 10000, u'time': u'29 06 2015 21:55:45 +0000'}},
+        u'building': {
+                u'energy_capacity': 0,
+                u'water_capacity': 0,
+                u'image': u'food-reserve5',
+                u'ore_hour': u'0',
+                u'happiness_hour': u'0',
+                u'id': u'5029889',
+                u'upgrade': {
+                    u'production': {
+                        u'energy_capacity': 0,
+                        u'food_capacity': u'10378',
+                        u'waste_capacity': 0,
+                        u'water_hour': u'-9',
+                        u'waste_hour': u'9',
+                        u'water_capacity': 0,
+                        u'ore_capacity': 0,
+                        u'food_hour': u'-9',
+                        u'energy_hour': u'-36',
+                        u'happiness_hour': u'0',
+                        u'ore_hour': u'0'},
+                    u'reason': [1010, u'You must complete the pending build first.'],
+                    u'cost': {
+                        u'ore': u'591', u'food': u'591', u'energy': u'591', u'water': u'591', u'time': u'2385', u'waste': u'591'},
+                    u'can': 0, u'image': u'food-reserve6'},
+                u'waste_hour': u'6',
+                u'ore_capacity': 0,
+                u'food_hour': u'-6',
+                u'food_capacity': u'6696',
+                u'waste_capacity': 0,
+                u'water_hour': u'-6',
+                u'pending_build': {
+                    u'start': u'29 06 2015 17:47:02 +0000',
+                    u'seconds_remaining': 14689,
+                    u'end': u'30 06 2015 02:00:34 +0000'},
+                u'efficiency': u'100',
+                u'downgrade': {
+                    u'reason': [1013, u'This building is currently upgrading.'],
+                    u'can': 0,
+                    u'image': u'food-reserve4'},
+                u'name': u'Food Reserve',
+                u'level': u'5',
+                u'repair_costs': {
+                    u'food': u'0',
+                    u'water': u'0',
+                    u'energy': u'0',
+                    u'ore': u'0'},
+                u'energy_hour': u'-23',
+                u'y': u'-3',
+                u'x': u'-5'},
+            u'food_stored': {u'cheese': 0, u'apple': u'1597', u'chip': 0, u'shake': 0, u'pie': 0, u'burger': u'2', u'beetle': 0, u'milk': 0, u'syrup': 0, u'wheat': u'1056', u'corn': 2613, u'fungus': u'1880', u'bean': 0, u'pancake': 0, u'algae': u'603', u'bread': 0, u'potato': u'603', u'lapis': 0, u'cider': 0, u'soup': 0, u'root': 0, u'meal': 0}}}
+''')
+
+GET_BUILDINGS_RESPONSE = ast.literal_eval('''
 {u'id': 3,
  u'jsonrpc': u'2.0',
  u'result': {u'body': {u'surface_image': u'surface-p38'},
@@ -444,4 +515,41 @@ GET_BUILDINGS_RESPONSE = '''
     u'star_map_size': {u'x': [-1500, 1500], u'y': [-1500, 1500]},
     u'time': u'28 06 2015 23:46:51 +0000',
     u'version': 3.0911}}}}
-'''
+''')
+
+class testBody(unittest.TestCase):
+    # def setUp(self):
+    #     # Patch out requests
+    #     patcher = patch('pylacuna.building.requests')
+    #     self.mock_requests = patcher.start()
+    #     self.addCleanup(patcher.stop)
+
+    #     # Patch out pickle
+    #     patcher = patch('pylacuna.session.pickle')
+    #     self.mock_pickle = patcher.start()
+    #     self.addCleanup(patcher.stop)
+
+    def tearDown(self):
+        pass
+
+    def test_init(self):
+        session_mock = MagicMock()
+        session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
+        b = pylacuna.body.Body(session_mock, 1)
+
+    def test_bodyeval_print(self):
+        session_mock = MagicMock()
+        session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
+        b = pylacuna.body.Body(session_mock, 1)
+        be = pylacuna.bodyeval.BodyEval(b)
+        print be
+
+    def test_bodyeval_value(self):
+        session_mock = MagicMock()
+        session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
+        b = pylacuna.body.Body(session_mock, 1)
+        be = pylacuna.bodyeval.BodyEval(b)
+        print be.value()
+
+if __name__ == '__main__':
+    unittest.main()

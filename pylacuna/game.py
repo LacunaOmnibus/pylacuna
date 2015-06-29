@@ -13,7 +13,7 @@ import session
 import user
 import errors
 import body
-
+import bodyeval
 
 
 
@@ -32,7 +32,10 @@ class Game(object):
     def run(self):
         ''' Run the AI '''
         home = body.Body(self.session, self.session.status['empire']['home_planet_id'])
-        home.status.resource_calcs()
+        be = bodyeval.BodyEval(home)
+        print be
+        print be.value()
+        print home.buildings[0].view()
         from IPython import embed; embed()
 
     def get_server(self):

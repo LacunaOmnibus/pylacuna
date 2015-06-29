@@ -94,6 +94,19 @@ abstraction levels:
  - HIGH-LEVEL libraries will include the AI. I'm leaning toward starting with A*, depending on how easy it is to simulate future states.  It'll depend on how the middleware layer turns out.
 
 
+Ideas about AI
+--------------
+A simple approach might be to try to attempt the following
+ - ENUMERATE all the actions available to the player right now.
+ - EVALUATE all actions according to a heuristic
+ - SUGGEST best action
+
+ This will never suggest a "wait" action (though that probably could be implemented easily).
+
+Eventually this might lead to being able to go 2 "moves" ahead, by looping it. Maybe...
+
+### Enumerate all actions ###
+Not sure how to do this. I guess we can check for upgrading every building, building every new building, demolishing every building, building every ship, sending every ship, doing every mission, buying every trade, ... The list of actions is huge. We might need to restrict it at first to be manageable.
 
 
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import requests
 import pickle
+import urlparse
 
 from ipdb import set_trace
 from IPython import embed
@@ -45,7 +46,8 @@ class Session(object):
             "params": [username, password, g.APIKEY]
         }
         print "Logging in via server"
-        response = requests.post(server_uri+'empire', json=payload)
+        url = urlparse.urljoin(server_uri, '/empire')
+        response = requests.post(url, json=payload)
         response.raise_for_status()
         return cls(server_uri, response.json(), save)
 
@@ -98,13 +100,15 @@ class Session(object):
 
         # Add session id as first parameter
         params.insert(0, self.id)
+
         payload = {
             "id": self.request_id,
             "jsonrpc": "2.0",
             "method": method,
             "params": params
         }
-        response = requests.post(self.server+route, json=payload)
+        url = urlparse.urljoin(self.server, route)
+        response = requests.post(url, json=payload)
         # Not sure if I should raise here or not....
         # response.raise_for_status()
         # ------------------------------------------
