@@ -23,5 +23,6 @@ setup(
         'python-dateutil',
         'ipdb',
         'ipython',
-        'mock'],
+        'mock',
+        'nose'],
     )
