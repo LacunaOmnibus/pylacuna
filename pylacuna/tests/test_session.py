@@ -2,10 +2,10 @@
 
 import os
 import unittest
-import pylacuna.session
 from mock import patch, MagicMock, ANY, call
-
 import ast
+
+import pylacuna.core.session as session
 
 from sys import version_info
 if version_info.major == 2:
@@ -56,13 +56,13 @@ SESSION_DICT = ast.literal_eval('''
 class testSession(unittest.TestCase):
     def setUp(self):
         # Patch out requests
-        patcher = patch('pylacuna.session.requests')
+        patcher = patch('pylacuna.core.session.requests')
         self.mock_requests = patcher.start()
 
         self.addCleanup(patcher.stop)
 
         # Patch out pickle
-        patcher = patch('pylacuna.session.pickle')
+        patcher = patch('pylacuna.core.session.pickle')
         self.mock_pickle = patcher.start()
         self.addCleanup(patcher.stop)
 
@@ -77,25 +77,25 @@ class testSession(unittest.TestCase):
 
     def test_basic_init(self):
         # Should not throw
-        s = pylacuna.session.Session("testserver", SESSION_DICT)
+        s = session.Session("testserver", SESSION_DICT)
         self.mock_open.assert_any_call('.session_info', 'w')
 
     def test_basic_init_no_save(self):
-        s = pylacuna.session.Session("testserver", SESSION_DICT, save=False)
+        s = session.Session("testserver", SESSION_DICT, save=False)
         self.assertFalse(self.mock_open.called)
 
     def test_init_from_file(self):
-        s = pylacuna.session.Session.load('filename')
+        s = session.Session.load('filename')
 
     def test_init_from_login(self):
         _tmp = MagicMock()
         self.mock_requests.post.return_value = _tmp
         _tmp.json.return_value = SESSION_DICT
-        s = pylacuna.session.Session.login('http://nowhere.com/', 'username', 'password')
+        s = session.Session.login('http://nowhere.com/', 'username', 'password')
         self.mock_requests.post.assert_any_call('http://nowhere.com/empire', json=ANY)
 
     def test_generic_method_call(self):
-        s = pylacuna.session.Session("http://testserver/", SESSION_DICT)
+        s = session.Session("http://testserver/", SESSION_DICT)
         expected = call(
             'http://testserver/route',
             json={

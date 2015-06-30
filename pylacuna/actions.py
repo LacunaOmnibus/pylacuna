@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import building
+import pylacuna.core.building as building
 
 class Actions(set):
     '''

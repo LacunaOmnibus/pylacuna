@@ -1,6 +1,6 @@
 import pickle
 
-import globals as g
+import pylacuna.globals as g
 
 
 class User(dict):

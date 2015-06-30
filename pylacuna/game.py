@@ -8,12 +8,12 @@ from dateutil import tz, parser
 import redis
 
 # Pylacuna imports
-import globals as g
-import session
-import user
-import errors
-import body
-import bodyeval
+import pylacuna.globals as g
+import pylacuna.core.session as session
+import pylacuna.core.user as user
+import pylacuna.core.errors as errors
+import pylacuna.core.body as body
+import pylacuna.bodyeval as bodyeval
 
 
 

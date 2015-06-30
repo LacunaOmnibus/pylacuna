@@ -2,7 +2,7 @@
 
 import os
 import unittest
-import pylacuna.status
+import pylacuna.core.status as status
 from mock import patch, MagicMock, ANY, call
 
 import ast
@@ -97,10 +97,10 @@ class testStatus(unittest.TestCase):
         pass
 
     def test_init(self):
-        s = pylacuna.status.Status(STATUS_DICT)
+        s = status.Status(STATUS_DICT)
 
     def test_resource_calcs(self):
-        s = pylacuna.status.Status(STATUS_DICT)
+        s = status.Status(STATUS_DICT)
         print s.resource_calcs()
 
 

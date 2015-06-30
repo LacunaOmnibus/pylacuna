@@ -4,8 +4,8 @@ import os
 import unittest
 from mock import patch, MagicMock, ANY, call
 
-import pylacuna.body
-import pylacuna.bodyeval
+import pylacuna.core.body as body
+import pylacuna.bodyeval as bodyeval
 
 import ast
 
@@ -535,20 +535,20 @@ class testBody(unittest.TestCase):
     def test_init(self):
         session_mock = MagicMock()
         session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
-        b = pylacuna.body.Body(session_mock, 1)
+        b = body.Body(session_mock, 1)
 
     def test_bodyeval_print(self):
         session_mock = MagicMock()
         session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
-        b = pylacuna.body.Body(session_mock, 1)
-        be = pylacuna.bodyeval.BodyEval(b)
+        b = body.Body(session_mock, 1)
+        be = bodyeval.BodyEval(b)
         print be
 
     def test_bodyeval_value(self):
         session_mock = MagicMock()
         session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
-        b = pylacuna.body.Body(session_mock, 1)
-        be = pylacuna.bodyeval.BodyEval(b)
+        b = body.Body(session_mock, 1)
+        be = bodyeval.BodyEval(b)
         print be.value()
 
 if __name__ == '__main__':

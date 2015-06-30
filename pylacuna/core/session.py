@@ -6,8 +6,8 @@ import urlparse
 from ipdb import set_trace
 from IPython import embed
 
-import globals as g
-import status
+import pylacuna.globals as g
+import pylacuna.core.status as status
 
 class Session(object):
     ''' Represents a logged-in session to Lacuna

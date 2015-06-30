@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import status
-import building
-import empire
+import pylacuna.core.status as status
+import pylacuna.core.building as building
+import pylacuna.core.empire as empire
 
 class Body(dict):
     def __init__(self, session, body_id):

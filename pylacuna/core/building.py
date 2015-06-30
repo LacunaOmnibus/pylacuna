@@ -2,15 +2,16 @@
 
 class Building(dict):
     ''' Common methods for working with buildings '''
-    def __init__(self, session, building_id, aDict=None, extended=False):
+    def __init__(self, session, building_id, aDict=None):
         if aDict is None:
             aDict = {}
         super(Building, self).__init__()
         self.session = session
         self.update(aDict)
         self.id = building_id
-        if extended:  # Download full information if extended is asked
-            self.view()
+        # We need to figure out a way of caching the results of self.view()
+        # self.view()
+        #######################
 
     def __str__(self):
         desc = "{name:25s} (lvl {level:2s}) at <{x:2s},{y:2s}>: {efficiency} efficiency".format(**self)
