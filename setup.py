@@ -24,5 +24,6 @@ setup(
         'ipdb',
         'ipython',
         'mock',
-        'nose'],
+        'nose',
+        'recommonmark'],
     )
