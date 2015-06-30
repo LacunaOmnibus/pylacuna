@@ -5,6 +5,7 @@ import unittest
 from mock import patch, MagicMock, ANY, call
 import ast
 
+import pylacuna.globals as g
 import pylacuna.core.session as session
 
 from sys import version_info
@@ -78,7 +79,7 @@ class testSession(unittest.TestCase):
     def test_basic_init(self):
         # Should not throw
         s = session.Session("testserver", SESSION_DICT)
-        self.mock_open.assert_any_call('.session_info', 'w')
+        self.mock_open.assert_any_call(g.SESSION_FILE, 'w')
 
     def test_basic_init_no_save(self):
         s = session.Session("testserver", SESSION_DICT, save=False)
