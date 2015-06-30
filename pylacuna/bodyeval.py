@@ -20,7 +20,7 @@ class BodyEval(object):
 
     def value(self):
         print self.body
-        for bldg in self.body.buildings:
+        for bldg in sorted(self.body.buildings, key=lambda bld: bld['name']):
             print bldg
 
         FOOD_FACTOR = 1.0
