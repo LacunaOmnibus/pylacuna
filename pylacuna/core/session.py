@@ -3,11 +3,9 @@ import requests
 import pickle
 import urlparse
 
-from ipdb import set_trace
-from IPython import embed
-
 import pylacuna.globals as g
 import pylacuna.core.status as status
+
 
 class Session(object):
     ''' Represents a logged-in session to Lacuna
@@ -51,10 +49,6 @@ class Session(object):
         response.raise_for_status()
         return cls(server_uri, response.json(), save)
 
-    def logout(self):
-        print "Logging out {}".format(self.id)
-        return self.call_method_with_session_id('empire', 'logout', [self.id])
-
     @classmethod
     def load(cls, filename):
         with open(filename, 'r') as f:
@@ -63,7 +57,11 @@ class Session(object):
             return cls
 
     @classmethod
-    def create_or_load(cls, file_path, server_uri, username, password, save=True):
+    def create_or_load(cls, file_path, server_uri, username, password,
+                       save=True):
+        ''' A convenience function for loading a session if it is available and
+        creating it otherwise.
+        '''
         _tmp = None
         try:
             _tmp = cls.load(g.SESSION_FILE)
@@ -73,11 +71,12 @@ class Session(object):
             if not e.errno == 2:  # File not found
                 raise
 
-        # Just clear it if its inactive
+        # Check if active.
         if _tmp is not None and not _tmp.is_active():
             _tmp.logout()
             _tmp = None
 
+        # New login ()
         if _tmp is None:
             _tmp = cls.login(server_uri, username, password, save)
 
@@ -86,6 +85,10 @@ class Session(object):
         else:
             raise RuntimeError('Could not create active session')
 
+    def logout(self):
+        print "Logging out {}".format(self.id)
+        return self.call_method_with_session_id('empire', 'logout', [self.id])
+
     def save(self, filename):
         ''' Saves itself to a file '''
         with open(filename, 'w') as f:
@@ -93,7 +96,18 @@ class Session(object):
 
     def call_method_with_session_id(self, route, method, params=None):
         '''
-        POSTs a JSON RPC 2.0 method at server/route/
+        POSTs a JSON RPC 2.0 method to server/route/
+
+        The workhorse of this class. This method is used by almost every
+        core driver to make calls to the API. It will automatically prepend
+        the session ID to any other parameters.
+
+        route -- The section of url to append to the server. Examples are
+                '/empire', '/stats', '/map'
+        method -- The method to call at the specified route. Examples are
+                'build', 'upgrade'
+        params -- A list of parameters to supply to the method. Examples are
+                x and y coordinates for a build. [3,-1]
         '''
         if params is None:
             params = []
@@ -119,8 +133,7 @@ class Session(object):
         return response.json()
 
     def is_active(self):
-        ''' Checks that a session is active by pinging the server for
-        stats
+        ''' Checks that a session is active by pinging the server for stats
         '''
         print "Checking if session is active."
         result = self.call_method_with_session_id('stats', 'empire_rank', [])

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 class Status(dict):
     ''' Methods for updating/viewing statuses '''
     def __init__(self, status_dict):

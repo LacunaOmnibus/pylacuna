@@ -77,14 +77,14 @@ class testSession(unittest.TestCase):
         pass
 
     def test_basic_init(self):
-        # Should not throw
-        s = session.Session("testserver", SESSION_DICT)
+        session.Session("testserver", SESSION_DICT)
         self.mock_open.assert_any_call(g.SESSION_FILE, 'w')
 
     def test_basic_init_no_save(self):
-        s = session.Session("testserver", SESSION_DICT, save=False)
+        session.Session("testserver", SESSION_DICT, save=False)
         self.assertFalse(self.mock_open.called)
 
+    @unittest.skip("Needs assertion")
     def test_init_from_file(self):
         s = session.Session.load('filename')
 
@@ -111,9 +111,6 @@ class testSession(unittest.TestCase):
 
         # print self.mock_open.mock_calls
         # print self.mock_pickle.mock_calls
-
-
-
 
 
 if __name__ == '__main__':

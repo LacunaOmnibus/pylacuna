@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import os
 import unittest
 import pylacuna.core.status as status
@@ -80,6 +79,7 @@ STATUS_DICT = ast.literal_eval('''
  u'y': u'-256',
  u'zone': u'1|-1'}
 ''')
+
 
 class testStatus(unittest.TestCase):
     # def setUp(self):

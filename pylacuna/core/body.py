@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-
-import pylacuna.core.status as status
 import pylacuna.core.building as building
 import pylacuna.core.empire as empire
+
 
 class Body(dict):
     def __init__(self, session, body_id):
@@ -15,15 +14,6 @@ class Body(dict):
         self.id = body_id
         self.empire = empire.Empire({})
         self.buildings = self.get_buildings()
-
-    # def __str__(self):
-    #     desc = ("{name} ({id}) at <{x},{y}>\n"
-    #             "Size {size} {type} in orbit {orbit} around {star_name} ({star_id})\n"
-    #             "".format(**self))
-    #     desc += "RESOURCES:\n" + self.get_resources()
-    #     if self.is_owned():
-    #         desc += "PRODUCTION:\n" + self.get_production()
-    #     return desc
 
     def get_status(self):
         return self.session.call_method_with_session_id(
@@ -86,8 +76,8 @@ class Body(dict):
             method='view_laws',
             params=[self.id])
 
-    def build (self, building_name, x, y ):
+    def build(self, building_name, x, y):
         return self.session.call_method_with_session_id(
-            route='buildings/{}'.format(building_name),
+            route='/{}'.format(building_name),
             method='build',
             params=[self.id, x, y])

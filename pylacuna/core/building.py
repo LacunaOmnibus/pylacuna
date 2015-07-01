@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 class Building(dict):
     ''' Common methods for working with buildings '''
     def __init__(self, session, building_id, aDict=None):
@@ -71,5 +72,3 @@ class Building(dict):
             route=self['url'],
             method='repair',
             params=[self.id])
-
-

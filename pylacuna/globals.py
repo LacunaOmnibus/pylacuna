@@ -4,4 +4,3 @@ RESOURCES_FILE = 'resources.json'
 SESSION_FILE = '.session'
 USER_CONFIG = '.config'
 REDIS_HANDLE = None
-

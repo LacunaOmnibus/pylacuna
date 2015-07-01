@@ -7,7 +7,7 @@ I'm trying to accomplish three things here.
 
 1. Produce generic python libraries for interacting with the Lacuna Expanse game, to allow developers to create their own scripts easily.
 2. Use those libraries to create useful scripts that help a player perform routine actions.
-3. Use those scripts with some AI to create an automated bot to play the game.
+3. Combine those scripts with AI to create an automated bot.
 
 
 ## Installation
@@ -59,21 +59,22 @@ pylacuna
 ## Architecture
 I'm trying to have code at multiple abstraction levels:
 
-- CORE drivers are the raw interface to the JSONRPC. I'm trying to keep them
+- **CORE** drivers are the raw interface to the JSONRPC. I'm trying to keep them
   dumb, simple, and stateless, though that last one might be hard because I
-  also want to be smart about caching. Most are dervied from the `dict` object.
+  also want to be smart about caching. Most are dervied from the `dict` object. We should avoid doing any kind of caching at this layer.
 
-- MIDDLEWARE libraries will have more types of calculations, mission-level
-  logic and hueristics. For example, maybe a method that ranks the nearest planets according
-  to their resource content. Or something that intelligently upgrades the food production on a planet.
+- **MIDDLEWARE** libraries will have more types of calculations, mission-level
+  logic and hueristics. For example, maybe a method that ranks the nearest
+  planets according to their resource content. Or something that intelligently
+  upgrades the food production on a planet. CACHING should go here or higher.
 
-- HIGH-LEVEL libraries will include the AI. I'm leaning toward starting with
+- **HIGH-LEVEL** libraries will include the AI. I'm leaning toward starting with
   A*, depending on how easy it is to simulate future states. It'll depend a lot on
   how the middleware layer turns out.
 
 ### Layout
 Uses a "standard" Python project layout
-```
+```text
 Project/
 |-- bin/
 |   |-- scripts

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import pylacuna.core.building as building
 
 
@@ -27,25 +26,27 @@ class Shipyard(building.Building):
             params=[self.id, ship_id])
 
     def get_buildable(self, tag=None):
-        ''' tag -- An optional tag to limit the list of available ships to something shorter. If no tag is specified, then all ships will be displayed.
+        ''' tag -- An optional tag to limit the list of available ships to
+        something shorter. If no tag is specified, then all ships will be
+        displayed. Possible tags:
 
-        Trade
-        Ships that can be used to carry resources between colonies.
+            Trade
+            Ships that can be used to carry resources between colonies.
 
-        Colonization
-        Ships used to get more planets.
+            Colonization
+            Ships used to get more planets.
 
-        Intelligence
-        Ships that deal with spies or intelligence gathering.
+            Intelligence
+            Ships that deal with spies or intelligence gathering.
 
-        Exploration
-        Ships that allow the user to go out and explore the Expanse.
+            Exploration
+            Ships that allow the user to go out and explore the Expanse.
 
-        War
-        Ships that are used to attack or defend.
+            War
+            Ships that are used to attack or defend.
 
-        Mining
-        Ships that are used to gather resources from space.
+            Mining
+            Ships that are used to gather resources from space.
         '''
         if tag is None:
             tag = []
@@ -60,5 +61,3 @@ class Shipyard(building.Building):
             route='buildings/shipyard',
             method='build_ship',
             params=[self.id, ship_type, quantity])
-
-

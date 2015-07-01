@@ -60,5 +60,5 @@ target/
 .config
 .session
 
-# Virtual Env
+# VirtualEnv
 .venv/

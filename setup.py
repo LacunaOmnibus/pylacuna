@@ -18,12 +18,12 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules'],
     long_description=open('README.md', 'r').read(),
     install_requires=[
+        # Main
+        'requests', 'python-dateutil',
+        # Caching
         'redis',
-        'requests',
-        'python-dateutil',
-        'ipdb',
-        'ipython',
-        'mock',
-        'nose',
+        # Dev/Test packages
+        'ipdb', 'ipython', 'mock', 'nose', 'pep8', 'pyflakes',
+        # Docs packages
         'recommonmark'],
     )

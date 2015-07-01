@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import core.status
 
 class BodyEval(object):
     def __init__(self, body):
