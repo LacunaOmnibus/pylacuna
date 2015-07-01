@@ -60,17 +60,16 @@ pylacuna
 I'm trying to have code at multiple abstraction levels:
 
 - **CORE** drivers are the raw interface to the JSONRPC. I'm trying to keep them
-  dumb, simple, and stateless, though that last one might be hard because I
-  also want to be smart about caching. Most are dervied from the `dict` object. We should avoid doing any kind of caching at this layer.
+  dumb, simple, and stateless, though that last one might be hard. Most are derived from the `dict` object. We should avoid doing any kind of caching at this layer.
 
 - **MIDDLEWARE** libraries will have more types of calculations, mission-level
   logic and hueristics. For example, maybe a method that ranks the nearest
   planets according to their resource content. Or something that intelligently
-  upgrades the food production on a planet. CACHING should go here or higher.
+  upgrades the food production on a planet. Caching should go here or higher.
 
 - **HIGH-LEVEL** libraries will include the AI. I'm leaning toward starting with
   A*, depending on how easy it is to simulate future states. It'll depend a lot on
-  how the middleware layer turns out.
+  how the middleware layer turns out. I also could incorporate some of the server code to run mini-simulations.
 
 ### Layout
 Uses a "standard" Python project layout
@@ -102,11 +101,14 @@ Project/
 ### Ideas about AI
 
 A simple approach might be to try to attempt the following
- - **ENUMERATE** all the actions available to the player right now.
- - **EVALUATE** all actions according to a heuristic
- - **SUGGEST** best action
 
-Eventually this might lead to being able to go 2 "moves" ahead, by looping it. Maybe...
+- **ENUMERATE** all the actions available to the player right now.
+
+- **EVALUATE** all actions according to a heuristic
+
+- **SUGGEST** best action
+
+Eventually this might lead to being able to go 2 "moves" ahead, by looping it. Maybe... that requires simulating a lot more of the game itself.
 
 #### Enumerate all actions
 Not sure how to do this. I guess we can check for upgrading every building, building every new building, demolishing every building, building every ship, sending every ship, doing every mission, buying every trade, ... The list of actions is huge. We will need to restrict it at first to be manageable.
