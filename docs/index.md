@@ -113,6 +113,19 @@ Eventually this might lead to being able to go 2 "moves" ahead, by looping it. M
 #### Enumerate all actions
 Not sure how to do this. I guess we can check for upgrading every building, building every new building, demolishing every building, building every ship, sending every ship, doing every mission, buying every trade, ... The list of actions is huge. We will need to restrict it at first to be manageable.
 
+#### Caching Ideas
+So far, it seems like it would be best to cache at the building level, using a key that is:
+
+BODY_UNIQUE_ID + BUILDING_UID + BUILDING_LEVEL
+
+This allows us to deconflict the cache across bodies, as well as cache things that we simulate when we evaluate building upgrades. Also, if a building is upgraded outside the API, this can catch that. The cached item should expire whenever upgrading/downgrading is complete, or work is finished (maybe), or a default of ~1-7 days (still deciding).
+
+#### First script idea -- babysit production
+Look at a planet's 5 main resources (water, energy, ore, food, waste), and upgrade the building that will produce the most positive change (or negative, in the case of waste) to those things. Target a waste/hour of zero (but not below?), and favor upgrading the least abundant resource. Wait until all other upgrading has ceased before taking action.
+
+Step 2: Include building new production buildings in the calculation.
+
+
 ### [License](license.md)
 
 
