@@ -31,6 +31,8 @@ class Body(dict):
             self.update(results['status']['body'])
         if 'empire' in results['status']:
             self.empire.update(results['status']['empire'])
+
+        # ToDo: Handle case where buildings with details are already gotten
         bldgs_list = []
         if 'buildings' in results:
             for x in results['buildings']:

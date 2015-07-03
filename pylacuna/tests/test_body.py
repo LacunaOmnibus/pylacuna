@@ -542,14 +542,23 @@ class testBody(unittest.TestCase):
         session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
         b = body.Body(session_mock, 1)
         be = bodyeval.BodyEval(b)
-        print be
+        # print be
 
     def test_bodyeval_value(self):
         session_mock = MagicMock()
         session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
         b = body.Body(session_mock, 1)
         be = bodyeval.BodyEval(b)
+        print session_mock.mock_calls
         print be.value()
+
+    def test_get_all_production(self):
+        session_mock = MagicMock()
+        session_mock.call_method_with_session_id.return_value = GET_BUILDINGS_RESPONSE
+        b = body.Body(session_mock, 1)
+        be = bodyeval.BodyEval(b)
+        # be.
+        pass
 
 if __name__ == '__main__':
     unittest.main()

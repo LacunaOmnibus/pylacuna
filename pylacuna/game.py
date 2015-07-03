@@ -16,7 +16,6 @@ import pylacuna.core.body as body
 import pylacuna.bodyeval as bodyeval
 
 
-
 class Game(object):
     def __init__(self):
         print "Initializing:"
@@ -34,8 +33,6 @@ class Game(object):
         home = body.Body(self.session, self.session.status['empire']['home_planet_id'])
         be = bodyeval.BodyEval(home)
         print be
-        print be.value()
-        print home.buildings[0].view()
         from IPython import embed; embed()
 
     def get_server(self):

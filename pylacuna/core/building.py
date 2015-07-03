@@ -16,10 +16,15 @@ class Building(dict):
 
     def __str__(self):
         desc = "{name:25s} (lvl {level:2s}) at <{x:2s},{y:2s}>: {efficiency} efficiency".format(**self)
-        if 'pending_build' in self:
+        if 'pending_build' in self and self['pending_build'] is not None:
             desc += "  UPGRADING: {} seconds left".format(self['pending_build']['seconds_remaining'])
-        if 'work' in self:
+        if 'work' in self and self['work'] is not None:
             desc += "  WORKING: {} seconds left".format(self['work']['seconds_remaining'])
+        if 'upgrade' in self and self['upgrade'] is not None:
+            desc += "  Can upgrade: {}".format(self['upgrade']['can'])
+        if 'energy_capacity' in self:
+            desc += "  (FULL DETAILS)"
+
         return desc
 
     def build(self, x, y):
@@ -35,6 +40,9 @@ class Building(dict):
             route=self['url'],
             method='view',
             params=[self.id])
+        print "VIEW"
+        print data['result']['building']
+        print "VIEWEND"
         self.update(data['result']['building'])
         return data
 

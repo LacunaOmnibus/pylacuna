@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from redis_cache import SimpleCache, ExpiredKeyException, CacheMissException
+
 
 class BodyEval(object):
     def __init__(self, body):
@@ -7,6 +9,7 @@ class BodyEval(object):
         body -- A body object on which to perform calcs
         '''
         self.body = body
+        self.cache = SimpleCache(limit=100, expire=60*60*24)
 
     def __str__(self):
         desc = ("{name} ({id}) at <{x},{y}>\n"
@@ -19,8 +22,7 @@ class BodyEval(object):
 
     def value(self):
         print self.body
-        for bldg in sorted(self.body.buildings, key=lambda bld: bld['name']):
-            print bldg
+        self.get_buildings()
 
         FOOD_FACTOR = 1.0
         WATER_FACTOR = 1.0
@@ -38,6 +40,50 @@ class BodyEval(object):
 
     def is_owned(self):
         return True if 'building_count' in self.body else False
+
+    def get_production_buildings(self):
+        self.get_buildings()
+        prod = []
+        for bldg in sorted(self.body.buildings, key=lambda bld: bld['name']):
+            print bldg
+            if (int(bldg["ore_hour"]) > 0 or
+                    int(bldg["water_hour"]) > 0 or
+                    int(bldg["food_hour"]) > 0 or
+                    int(bldg["energy_hour"]) > 0):
+                prod.append(bldg)
+        return prod
+
+    def get_buildings(self):
+        for bldg in self.body.buildings:
+            bldg = self.get_building_detail(bldg)
+            print "{}".format(bldg)
+
+    def find_seconds_to_bust_cache(self, building):
+        ''' Given a building, find the soonest time when we would need to update
+        from server, or returns None.
+        Updates could be due to:
+         - upgrade/downgrade
+         - work being complete? (maybe)
+        '''
+        return None
+
+    def get_building_detail(self, building):
+        # See if we already have it
+        if "energy_capacity" in building:
+            self.cache.store(building.id, building, expire=self.find_seconds_to_bust_cache(building))
+            return building
+
+        # Try to get it from cache
+        try:
+            return self.cache.get(building.id)
+        except (ExpiredKeyException, CacheMissException):
+            # Ignore misses or expireds
+            pass
+
+        # Update from server
+        building.view()
+        self.cache.store(building.id, building, expire=self.find_seconds_to_bust_cache(building))
+        return building
 
     def get_production(self):
         desc =  "  Water: {}/{} at {}/hr\n".format(self.body['water_stored'], self.body['water_capacity'], self.body['water_hour'])

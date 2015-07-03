@@ -21,7 +21,7 @@ setup(
         # Main
         'requests', 'python-dateutil',
         # Caching
-        'redis',
+        'redis', 'redis-simple-cache',
         # Dev/Test packages
         'ipdb', 'ipython', 'mock', 'nose', 'pep8', 'pyflakes',
         # Docs packages
