@@ -2,6 +2,7 @@
 import requests
 import pickle
 import urlparse
+from collections import defaultdict
 
 import pylacuna.globals as g
 import pylacuna.core.status as status
@@ -94,6 +95,43 @@ class Session(object):
         with open(filename, 'w') as f:
             pickle.dump(self, f)
 
+    def _prep_payload(self, method, params):
+        payload = {
+            "id": self.request_id,
+            "jsonrpc": "2.0",
+            "method": method,
+            "params": params
+        }
+        self.request_id += 1
+        return payload
+
+    # Work in progress....
+    # def call_method_batch(self, route_list, method_list, params_list):
+    #     assert len(route_list) == len(method_list), "Length of lists must match!"
+    #     assert len(route_list) == len(params_list), "Length of lists must match!"
+    #     plist = []
+    #     for n, route in enumerate(route_list):
+    #         params = params_list[n]
+    #         if params is None:
+    #             params = []
+    #         params.insert(0, self.id)
+    #         payload = self._prep_payload(method_list[n], params)
+    #         plist.append((route, payload))
+    #     d = defaultdict(list)
+    #     for k, v in plist:
+    #         d[k].append(v)
+    #     responses = []
+    #     for route in d.keys():
+    #         payload = d[route]
+    #         print "Sending {} to {}".format(payload, route)
+    #         url = urlparse.urljoin(self.server, route)
+    #         response = requests.post(url, json=payload)
+    #         data = response.json()
+    #         if 'result' in data and 'status' in data['result']:
+    #             self.status.update(data['result']['status'])
+    #         responses.append(data)
+    #     return responses
+
     def call_method_with_session_id(self, route, method, params=None):
         '''
         POSTs a JSON RPC 2.0 method to server/route/
@@ -114,22 +152,16 @@ class Session(object):
 
         # Add session id as first parameter
         params.insert(0, self.id)
-
-        payload = {
-            "id": self.request_id,
-            "jsonrpc": "2.0",
-            "method": method,
-            "params": params
-        }
+        payload = self._prep_payload(method, params)
         url = urlparse.urljoin(self.server, route)
         response = requests.post(url, json=payload)
         # Not sure if I should raise here or not....
         # response.raise_for_status()
         # ------------------------------------------
-        self.request_id += 1
         data = response.json()
-        if 'status' in data:
-            self.status.update(data['status'])
+        if 'result' in data and 'status' in data['result']:
+            self.status.update(data['result']['status'])
+            print "Status updated. RPC calls: {}".format(self.status['empire']['rpc_count'])
         return response.json()
 
     def is_active(self):
