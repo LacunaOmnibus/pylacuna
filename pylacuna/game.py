@@ -13,7 +13,7 @@ import pylacuna.core.session as session
 import pylacuna.core.user as user
 import pylacuna.core.errors as errors
 import pylacuna.core.body as body
-import pylacuna.bodyeval as bodyeval
+import pylacuna.enhancedbody as enhancedbody
 
 
 class Game(object):
@@ -30,11 +30,13 @@ class Game(object):
 
     def run(self):
         ''' Run the AI '''
-        home = body.Body(self.session, self.session.status['empire']['home_planet_id'])
-        be = bodyeval.BodyEval(home)
-        print be
-        from IPython import embed; embed()
+        # Create the home body
+        from ipdb import set_trace; set_trace()
+        home = enhancedbody.EnhancedBody(self.session, self.session.status['empire']['home_planet_id'])
+        print home
+        home.get_production_buildings()
 
+    # Todo: Move to server.py
     def get_server(self):
         print "Getting server..."
         with open("servers.json", 'r') as f:
@@ -43,6 +45,7 @@ class Game(object):
         main_server = servers[0]
         return main_server
 
+    # Todo -- move to own file
     def get_resources(self):
         print "Getting resources..."
         resources = None
@@ -76,6 +79,7 @@ class Game(object):
         print "Current time:     {}".format(now)
         return resource_expire_time <= now
 
+    # ToDo: Replace with user.create_of_load
     def create_or_load_user(self):
         _tmp = None
         try:

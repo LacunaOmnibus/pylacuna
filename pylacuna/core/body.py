@@ -13,7 +13,7 @@ class Body(dict):
         self.session = session
         self.id = body_id
         self.empire = empire.Empire({})
-        self.buildings = self.get_buildings()
+        self.buildings = []
 
     def get_status(self):
         return self.session.call_method_with_session_id(
@@ -32,15 +32,34 @@ class Body(dict):
         if 'empire' in results['status']:
             self.empire.update(results['status']['empire'])
 
-        # ToDo: Handle case where buildings with details are already gotten
-        bldgs_list = []
+        # What we want to do is update the building list, covering multiple
+        # cases:
+        #   - If the building doesn't exist, create it
+        #   - If the building already exists in our list, update it without
+        #     losing old information
+        #   - If the building has been deleted (doesn't exist in the response),
+        #     remove it from the list.
+
         if 'buildings' in results:
-            for x in results['buildings']:
-                bldgs_list.append(building.Building(
-                    session=self.session,
-                    building_id=x,
-                    aDict=results['buildings'][x]))
-        return bldgs_list
+            deletionlist = set([x.id for x in self.buildings]).difference(
+                set([uid for uid in results['buildings']]))
+            totalset = set([x.id for x in self.buildings])
+            totalset.update([uid for uid in results['buildings']])
+            for uid in totalset:
+                if uid in deletionlist:
+                    # print 'DELETING {}'.format(uid)
+                    self.buildings.remove(uid)
+                elif uid in self.buildings:
+                    # print "UPDATING {}".format(uid)
+                    idx = self.buildings.index(uid)
+                    self.buildings[idx].update(results['buildings'][uid])
+                else:
+                    # print "ADDING {}".format(uid)
+                    self.buildings.append(building.Building(
+                        session=self.session,
+                        building_id=uid,
+                        aDict=results['buildings'][uid]))
+        return self.buildings
 
     def repair_list(self, building_ids):
         return self.session.call_method_with_session_id(
@@ -55,6 +74,9 @@ class Body(dict):
             params=[self.id, arrangement])
 
     def get_buildable(self, x, y, tag):
+        '''
+        tag -- TBD
+        '''
         return self.session.call_method_with_session_id(
             route='body',
             method='get_buildable',

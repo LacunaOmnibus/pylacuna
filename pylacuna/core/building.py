@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+from functools import total_ordering
 
 
+@total_ordering
 class Building(dict):
     ''' Common methods for working with buildings '''
     def __init__(self, session, building_id, aDict=None):
@@ -13,6 +15,18 @@ class Building(dict):
         # We need to figure out a way of caching the results of self.view()
         # self.view()
         #######################
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return self.id == other.id
+        else:
+            # Not sure if this is a good idea
+            # Allows one to write:
+            #   if (uid) in (list of buildings)
+            return str(self.id) == str(other)
+
+    def __lt__(self, other):
+        return self.id < other.id
 
     def __str__(self):
         desc = "{name:25s} (lvl {level:2s}) at <{x:2s},{y:2s}>: {efficiency} efficiency".format(**self)
@@ -40,9 +54,8 @@ class Building(dict):
             route=self['url'],
             method='view',
             params=[self.id])
-        print "VIEW"
-        print data['result']['building']
-        print "VIEWEND"
+        if 'building' not in data['result']:
+            from ipdb import set_trace; set_trace()
         self.update(data['result']['building'])
         return data
 

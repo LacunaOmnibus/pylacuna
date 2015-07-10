@@ -59,17 +59,11 @@ pylacuna
 ## Architecture
 I'm trying to have code at multiple abstraction levels:
 
-- **CORE** drivers are the raw interface to the JSONRPC. I'm trying to keep them
-  dumb, simple, and stateless, though that last one might be hard. Most are derived from the `dict` object. We should avoid doing any kind of caching at this layer.
+- **CORE** drivers are the raw interface to the JSONRPC. I'm trying to keep them dumb, simple, and stateless, though that last one might be hard. Most are derived from the `dict` object. We should avoid doing any kind of caching at this layer.
 
-- **MIDDLEWARE** libraries will have more types of calculations, mission-level
-  logic and hueristics. For example, maybe a method that ranks the nearest
-  planets according to their resource content. Or something that intelligently
-  upgrades the food production on a planet. Caching should go here or higher.
+- **MIDDLEWARE** libraries will have more types of calculations, mission-level logic and hueristics. For example, maybe a method that ranks the nearest planets according to their resource content. Or something that intelligently upgrades the food production on a planet. Caching should go here or higher. Favor composition over inheritence for testability.
 
-- **HIGH-LEVEL** libraries will include the AI. I'm leaning toward starting with
-  A*, depending on how easy it is to simulate future states. It'll depend a lot on
-  how the middleware layer turns out. I also could incorporate some of the server code to run mini-simulations.
+- **HIGH-LEVEL** libraries will include the AI. I'm leaning toward starting with A*, depending on how easy it is to simulate future states. It'll depend a lot on how the middleware layer turns out. I also could incorporate some of the server code to run mini-simulations.
 
 ### Layout
 Uses a "standard" Python project layout
@@ -116,7 +110,7 @@ Not sure how to do this. I guess we can check for upgrading every building, buil
 #### Caching Ideas
 So far, it seems like it would be best to cache at the building level, using a key that is:
 
-BODY_UNIQUE_ID + BUILDING_UID + BUILDING_LEVEL
+BUILDING_UID + BUILDING_LEVEL
 
 This allows us to deconflict the cache across bodies, as well as cache things that we simulate when we evaluate building upgrades. Also, if a building is upgraded outside the API, this can catch that. The cached item should expire whenever upgrading/downgrading is complete, or work is finished (maybe), or a default of ~1-7 days (still deciding).
 
