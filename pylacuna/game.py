@@ -28,10 +28,13 @@ class Game(object):
         print "SESSION ID: {}".format(self.session.id)
         # self.home_planet = self.login_info['result']['status']['empire']['home_planet_id']
 
+    def test(self):
+        # Drops into ipython shell after initialization
+        from IPython import embed; embed()
+
     def run(self):
         ''' Run the AI '''
         # Create the home body
-        from ipdb import set_trace; set_trace()
         home = enhancedbody.EnhancedBody(self.session, self.session.status['empire']['home_planet_id'])
         print home
         home.get_production_buildings()

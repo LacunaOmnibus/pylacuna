@@ -10,11 +10,9 @@ class Building(dict):
             aDict = {}
         super(Building, self).__init__()
         self.session = session
-        self.update(aDict)
+        if aDict is not None:
+            self.update(aDict)
         self.id = building_id
-        # We need to figure out a way of caching the results of self.view()
-        # self.view()
-        #######################
 
     def __eq__(self, other):
         if isinstance(other, type(self)):

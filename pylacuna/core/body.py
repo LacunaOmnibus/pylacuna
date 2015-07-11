@@ -15,11 +15,19 @@ class Body(dict):
         self.empire = empire.Empire({})
         self.buildings = []
 
+    def _update_status(self, results):
+        if 'body' in results:
+            self.update(results['body'])
+        if 'empire' in results:
+            self.empire.update(results['empire'])
+
     def get_status(self):
-        return self.session.call_method_with_session_id(
+        results = self.session.call_method_with_session_id(
             route='body',
             method='get_status',
             params=[self.id])
+        self._update_status(results['result'])
+        return results
 
     def get_buildings(self):
         bldgs = self.session.call_method_with_session_id(
@@ -27,10 +35,7 @@ class Body(dict):
             method='get_buildings',
             params=[self.id])
         results = bldgs['result']
-        if 'body' in results['status']:
-            self.update(results['status']['body'])
-        if 'empire' in results['status']:
-            self.empire.update(results['status']['empire'])
+        self._update_status(results['status'])
 
         # What we want to do is update the building list, covering multiple
         # cases:

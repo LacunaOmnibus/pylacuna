@@ -1,14 +1,29 @@
 #!/usr/bin/env python
+import pylacuna.core.body
+import pylacuna.core.star
 
 
 class Map(dict):
     ''' Common methods for working with star maps,  '''
-    def __init__(self, session, aDict):
+    def __init__(self, session, central_star_id=None):
         super(Map, self).__init__()
-        self.update(aDict)
+        self.session = session
+        if central_star_id is None:
+            home_planet_id = session.status['empire']['home_planet_id']
+            home_planet = pylacuna.core.body.Body(session, home_planet_id)
+            home_planet.get_status()
+            central_star_id = home_planet['star_id']
+        self.center = central_star_id
+        self.stars = []
 
-    def get_star_map():
-        raise NotImplementedError
+    def get_star_map(self, left, right, top, bottom):
+        # http://us1.lacunaexpanse.com/api/Map.html#get_star_map
+        assert left < right
+        assert bottom < top
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='get_star_map',
+            params=[left, right, top, bottom])
 
     def get_stars(self, x1, y1, x2, y2):
         assert abs(x1-x2) <= 30, "Requested area too big"
@@ -22,7 +37,10 @@ class Map(dict):
         raise NotImplementedError
 
     def get_star(self, star_id):
-        raise NotImplementedError
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='get_star',
+            params=[star_id])
 
     def get_star_by_name(self, name):
         raise NotImplementedError

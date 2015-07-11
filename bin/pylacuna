@@ -43,16 +43,26 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+    # Create subparser for build command
+    star_cmd = subparsers.add_parser(
+        'get_nearest_habitable',
+        help=("Finds the nearest habitable planets to your homeworld."))
+
+    args = parser.parse_args()
+    return args
+
 
 def main():
     args = parse_args()
     print args
     if args.command == 'upgrade':
         print "Upgrade function"
-    if args.command == 'upgrade':
-        print "Upgrade function"
+    if args.command == 'build':
+        print "Build function"
+    if args.command == "get_nearest_habitable":
+        print "TBD"
     if args.command == 'test':
-        Game().run()
+        Game().test()
 
 if __name__ == '__main__':
     main()
