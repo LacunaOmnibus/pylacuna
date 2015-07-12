@@ -140,7 +140,7 @@ class Session(object):
     def is_active(self):
         ''' Checks that a session is active by pinging the server for stats
         '''
-        print "Checking if session is active."
+        # print "Checking if session is active."
         result = self.call_method_with_session_id('stats', 'empire_rank', [])
         if 'error' in result:
             return False

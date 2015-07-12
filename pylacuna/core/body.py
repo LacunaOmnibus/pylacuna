@@ -110,3 +110,19 @@ class Body(dict):
             route='/{}'.format(building_name),
             method='build',
             params=[self.id, x, y])
+
+    def find_building_by_name(self, building_name):
+        ''' Iterate over the buildings on this body, returning the one
+        that matches <building_name>. If there are multiple matches, throw
+        error
+        '''
+        ret = []
+        for bldg in self.buildings:
+            if bldg['name'] == building_name:
+                ret.append(bldg)
+        if len(ret) == 1:
+            return ret[0]
+        if len(ret) == 0:
+            return None
+        if len(ret) > 1:
+            raise Exception("More than one building found with that name")

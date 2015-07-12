@@ -35,15 +35,12 @@ def parse_args():
         'build',
         help=("Build stuff on a body"))
 
-    # Create subparser for build command
+    # Create subparser for test command
     test_cmd = subparsers.add_parser(
         'test',
         help=("Work in progress test code"))
 
-    args = parser.parse_args()
-    return args
-
-    # Create subparser for build command
+    # Create subparser for star command
     star_cmd = subparsers.add_parser(
         'get_nearest_habitable',
         help=("Finds the nearest habitable planets to your homeworld."))
@@ -54,13 +51,46 @@ def parse_args():
 
 def main():
     args = parse_args()
-    print args
     if args.command == 'upgrade':
         print "Upgrade function"
     if args.command == 'build':
         print "Build function"
     if args.command == "get_nearest_habitable":
-        print "TBD"
+        import pylacuna.core.body
+        import pylacuna.observatory
+        # To get the nearest habitable, let's try
+        # Initialize Game (this gets our session and server)
+        g = Game()
+        # We now have an active session, and knowledge of the home planet id.
+        # We need to find the observatory, so first we need to get the
+        # buildings of the home planet
+        home_planet = pylacuna.core.body.Body(g.session, g.session.status['empire']['home_planet_id'])
+        home_planet.get_buildings()
+        # Now that we have the buildings, we need to get the Observatory
+        obs = home_planet.find_building_by_name("Observatory")
+        # And convert it to a subclass in order to use its method (this should
+        # be done internally inside get_buildings() in the future)
+        obs = pylacuna.observatory.Observatory.from_building(obs)
+        # Now, using the observatory, we find all the stars that are probed.
+        stars = obs.get_probed_stars()
+        # The stars should already contain bodies. So now we just need to
+        # search all stars for bodies that are habitable
+        final = []
+        for star in stars:
+            for body in star.bodies:
+                if body['type'] == 'habitable planet' and int(body['orbit']) == 3:
+                    final.append(body)
+        # Finally, loop over bodies and print
+        print "\n\n\n"
+        print "HABITABLE PLANETS IN ORBIT 3 AS SEEN BY PROBES"
+        print "----------------------------------------------"
+        for body in final:
+            print "  {} orbiting {}".format(body['name'], body['star_name'])
+
+        # Now let's get the ships that we can send to each
+        sp = home_planet.find_building_by_name("Space Port")
+        sp = pylacuna.core.spaceport.SpacePort.from_building(sp)
+
     if args.command == 'test':
         Game().test()
 

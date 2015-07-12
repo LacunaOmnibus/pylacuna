@@ -4,7 +4,7 @@ import pylacuna.core.star
 
 
 class Map(dict):
-    ''' Common methods for working with star maps,  '''
+    ''' Common methods for working with star maps'''
     def __init__(self, session, central_star_id=None):
         super(Map, self).__init__()
         self.session = session
@@ -34,7 +34,10 @@ class Map(dict):
             params=[x1, y1, x2, y2])
 
     def check_star_for_incoming_probe(self, star_id):
-        raise NotImplementedError
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='check_star_for_incoming_probe',
+            params=[star_id])
 
     def get_star(self, star_id):
         return self.session.call_method_with_session_id(
@@ -43,13 +46,25 @@ class Map(dict):
             params=[star_id])
 
     def get_star_by_name(self, name):
-        raise NotImplementedError
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='get_star_by_name',
+            params=[name])
 
     def get_star_by_xy(self, x, y):
-        raise NotImplementedError
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='get_star_by_xy',
+            params=[x, y])
 
     def search_stars(self, name):
-        raise NotImplementedError
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='search_stars',
+            params=[name])
 
     def view_laws(self, star_id):
-        raise NotImplementedError
+        return self.session.call_method_with_session_id(
+            route='map',
+            method='view_laws',
+            params=[star_id])

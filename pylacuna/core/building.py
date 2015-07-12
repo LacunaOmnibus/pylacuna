@@ -14,6 +14,12 @@ class Building(dict):
             self.update(aDict)
         self.id = building_id
 
+    @classmethod
+    def from_building(cls, bldg):
+        ''' This can be used be subclasses to cast a Building object to a
+        subclass '''
+        return cls(bldg.session, bldg.id, bldg)
+
     def __eq__(self, other):
         if isinstance(other, type(self)):
             return self.id == other.id

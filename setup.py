@@ -19,7 +19,7 @@ setup(
     long_description=open('README.md', 'r').read(),
     install_requires=[
         # Main
-        'requests', 'python-dateutil',
+        'requests', 'requests[security]', 'python-dateutil',
         # Caching
         'redis', 'redis-simple-cache',
         # Dev/Test packages

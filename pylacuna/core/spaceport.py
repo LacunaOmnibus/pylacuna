@@ -35,7 +35,20 @@ class SpacePort(building.Building):
         pass
 
     def get_ships_for(self, from_body_id, target):
-        pass
+        '''
+        from_body_id - The unique id of the planet that should send the ship.
+        target - A hash reference that can contain one of five items to
+        identify a star or body:
+             { "body_name" : "Earth" }
+             { "body_id" : "id-goes-here" }
+             { "star_name" : "Sol" }
+             { "star_id" : "id-goes-here" }
+             { "x" : 4, "y" : -3 }
+        '''
+        return self.session.call_method_with_session_id(
+            route='spaceport',
+            method='get_ships_for',
+            params=[from_body_id, target])
 
     def send_ship(self, ship_id, target):
         pass
