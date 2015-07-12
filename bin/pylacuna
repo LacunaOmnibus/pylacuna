@@ -57,6 +57,7 @@ def main():
         print "Build function"
     if args.command == "get_nearest_habitable":
         import pylacuna.core.body
+        import pylacuna.core.spaceport
         import pylacuna.observatory
         # To get the nearest habitable, let's try
         # Initialize Game (this gets our session and server)
@@ -87,9 +88,20 @@ def main():
         for body in final:
             print "  {} orbiting {}".format(body['name'], body['star_name'])
 
-        # Now let's get the ships that we can send to each
+        # Now let's get the ships that we can send to each.
+        # First, we start by finding the space port.
         sp = home_planet.find_building_by_name("Space Port")
         sp = pylacuna.core.spaceport.SpacePort.from_building(sp)
+        # Then we get the ships for each target.
+        allships = []
+        for planet in final:
+            ships = sp.get_ships_for(home_planet.id, {"body_id": planet.id})
+            allships.append((planet, ships))
+
+        for p, t in allships:
+            print "{} -- {} ships available".format(p['name'], len(t['result']['available']))
+            for s in t['result']['available']:
+                print "  {}".format(s['name'])
 
     if args.command == 'test':
         Game().test()

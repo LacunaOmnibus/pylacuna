@@ -9,19 +9,19 @@ class Shipyard(building.Building):
         params = [self.id]
         params.extend(page_number)
         return self.session.call_method_with_session_id(
-            route='buildings/shipyard',
+            route='shipyard',
             method='view_build_queue',
             params=params)
 
     def subsidize_build_queue(self):
         return self.session.call_method_with_session_id(
-            route='buildings/shipyard',
+            route='shipyard',
             method='subsidize_build_queue',
             params=[self.id])
 
     def subsidize_ship(self, ship_id):
         return self.session.call_method_with_session_id(
-            route='buildings/shipyard',
+            route='shipyard',
             method='subsidize_ship',
             params=[self.id, ship_id])
 
@@ -51,13 +51,13 @@ class Shipyard(building.Building):
         if tag is None:
             tag = []
         return self.session.call_method_with_session_id(
-            route='buildings/shipyard',
+            route='shipyard',
             method='get_buildable',
             params=[self.id])
 
     def build_ship(self, ship_type, quantity=1):
         ''' type -- A ship type. Get from get_buildable. '''
         return self.session.call_method_with_session_id(
-            route='buildings/shipyard',
+            route='shipyard',
             method='build_ship',
             params=[self.id, ship_type, quantity])

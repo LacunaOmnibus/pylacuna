@@ -4,15 +4,19 @@ import pylacuna.core.empire as empire
 
 
 class Body(dict):
-    def __init__(self, session, body_id):
+    def __init__(self, session, body_id, attrs=None):
         '''
         session -- a Session object
         body_id -- the id for the body (planet, space station, asteroid)
+        attrs -- additional attributes to attach to the body
         '''
         super(Body, self).__init__()
         self.session = session
         self.id = body_id
         self.empire = empire.Empire({})
+        if attrs is None:
+            attrs = {}
+        self.update(attrs)
         self.buildings = []
 
     def _update_status(self, results):

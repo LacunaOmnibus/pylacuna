@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import pylacuna.core.building as building
 import pylacuna.core.star as star
+import pylacuna.core.body as body
 
 
 class Observatory(building.Building):
@@ -14,7 +15,11 @@ class Observatory(building.Building):
             method='get_probed_stars',
             params=[self.id, page_number])
         stars = result['result']['stars']
-        stars = [star.Star(self.session, s['id'], s, s['bodies']) for s in stars]
+        # Nested list comprehensions ftw! This basically creates a list of
+        # star objects, each with an embedded list of body objects.
+        stars = [star.Star(self.session, s['id'], s,
+                 [body.Body(self.session, b['id'], b) for b in s['bodies']])
+                 for s in stars]
         return stars
 
     def abandon_probe(self, star_id):

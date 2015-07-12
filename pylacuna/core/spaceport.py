@@ -5,6 +5,9 @@ import pylacuna.core.building as building
 class SpacePort(building.Building):
     '''
     API page: http://us1.lacunaexpanse.com/api/SpacePort.html
+
+    ToDo: Find a way to store the body id of the body on which this building
+    is constructed.  It's used in a lot of the API calls.
     '''
     def build_ship(self, ship_type, quantity=1):
         ''' type -- A ship type. Get from get_buildable. '''
