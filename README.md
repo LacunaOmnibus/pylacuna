@@ -38,7 +38,7 @@ Installation
 (Eventually we will want to host this on PyPy so we can just pip install it)
 
 To install (tested on Ubuntu 12.04, requires pip):
-
+```
 // Clone
 git clone "https://github.com/miketwo/pylacuna"
 cd pylacuna
@@ -47,18 +47,18 @@ virtualenv .venv
 . .venv/bin/activate
 // Install
 pip install .
-
+```
 You should now be able to import in your own python script:
-
+```
 import pylacuna
-
+```
 Usage
 
 TBD
 Development & Test
 
 To develop and run tests (tested on Ubuntu 12.04):
-
+```
 // Clone
 git clone "https://github.com/miketwo/pylacuna"
 cd pylacuna
@@ -71,7 +71,7 @@ pip install -e .
 pylacuna_run_tests.sh
 // Run main script
 pylacuna
-
+```
 ToDo
 
     so many things, will update here soon...
@@ -89,7 +89,7 @@ I'm trying to have code at multiple abstraction levels:
 Layout
 
 Uses a "standard" Python project layout
-
+```
 Project/
 |-- bin/
 |   |-- scripts
@@ -112,7 +112,7 @@ Project/
 |
 |-- setup.py
 |-- README.md
-
+```
 Ideas about AI
 
 A simple approach might be to try to attempt the following
